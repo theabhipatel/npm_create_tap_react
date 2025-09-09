@@ -13,7 +13,7 @@ const TEMPLATES = [
     name: "React.js with TypeScript (Basic setup)",
     value: "template-react-ts",
     repo: "theabhipatel/template_react_ts",
-    description: "Modern React framework with TypeScript",
+    description: "Modern React framework with TypeScript and Basic setup",
   },
   {
     name: "React.js with Shadcn (Auth setup) - comming soon",
@@ -21,6 +21,13 @@ const TEMPLATES = [
     repo: "theabhipatel/template_react_ts_auth",
     description:
       "Modern React framework with TypeScript and Authentication setup",
+  },
+  {
+    name: "React.js Dashboard with Shadcn (Auth setup) - comming soon",
+    value: "template-react-ts-auth",
+    repo: "theabhipatel/template_react_ts_dashboard",
+    description:
+      "Modern React Dashboard with TypeScript and Authentication setup",
   },
 ];
 
