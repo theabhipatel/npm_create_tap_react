@@ -14,24 +14,60 @@ const TEMPLATES = [
     value: "template-react-ts",
     repo: "theabhipatel/template_react_ts",
     description: "Modern React framework with TypeScript and Basic setup",
+    available: true,
   },
   {
-    name: "React.js with Shadcn (Auth setup) - comming soon",
+    name: "React.js with Shadcn (Auth setup)",
     value: "template-react-ts-auth",
     repo: "theabhipatel/template_react_ts_auth",
     description:
       "Modern React framework with TypeScript and Authentication setup",
+    available: false,
   },
   {
-    name: "React.js Dashboard with Shadcn (Auth setup) - comming soon",
-    value: "template-react-ts-auth",
+    name: "React.js Dashboard with Shadcn (Auth setup)",
+    value: "template-react-ts-dashboard",
     repo: "theabhipatel/template_react_ts_dashboard",
     description:
       "Modern React Dashboard with TypeScript and Authentication setup",
+    available: false,
   },
 ];
 
 const CLI_NAME = "create-tap-react";
+
+async function selectTemplate() {
+  const { template } = await inquirer.prompt([
+    {
+      name: "template",
+      type: "list",
+      message: "🎨 Select a template:",
+      choices: TEMPLATES.map((t) => ({
+        name: `${chalk.cyan(t.name)}${
+          !t.available ? chalk.red(" - Coming Soon") : ""
+        } - ${chalk.gray(t.description)}`,
+        value: t.value,
+        short: t.name,
+      })),
+      pageSize: 10,
+    },
+  ]);
+
+  const selectedTemplate = TEMPLATES.find((t) => t.value === template);
+
+  // Check if template is available
+  if (!selectedTemplate.available) {
+    console.log(
+      chalk.red("\n⚠️  This template is coming soon and not available yet!")
+    );
+    console.log(chalk.yellow("Please choose another template.\n"));
+
+    // Recursively call selectTemplate to allow user to choose again
+    return await selectTemplate();
+  }
+
+  return selectedTemplate;
+}
 
 async function main() {
   try {
@@ -41,22 +77,8 @@ async function main() {
       chalk.gray("Create modern applications with pre-configured templates\n")
     );
 
-    // Template selection
-    const { template } = await inquirer.prompt([
-      {
-        name: "template",
-        type: "list",
-        message: "🎨 Select a template:",
-        choices: TEMPLATES.map((t) => ({
-          name: `${chalk.cyan(t.name)} - ${chalk.gray(t.description)}`,
-          value: t.value,
-          short: t.name,
-        })),
-        pageSize: 10,
-      },
-    ]);
-
-    const selectedTemplate = TEMPLATES.find((t) => t.value === template);
+    // Template selection with coming soon handling
+    const selectedTemplate = await selectTemplate();
 
     // Project name input
     const { projectName } = await inquirer.prompt([
