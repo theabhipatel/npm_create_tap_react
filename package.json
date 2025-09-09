@@ -1,0 +1,64 @@
+{
+  "name": "create-tap-react",
+  "version": "1.0.0",
+  "description": "A modern CLI tool to create react applications with pre-configured templates",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "create-tap-react": "./index.js",
+    "caa": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "build": "echo 'No build step needed for Node.js CLI'",
+    "test": "echo 'Add tests here'",
+    "prepublishOnly": "echo 'Running pre-publish checks...'",
+    "postinstall": "echo 'Thanks for installing create-tap-react! 🚀'"
+  },
+  "keywords": [
+    "cli",
+    "generator",
+    "template",
+    "scaffold",
+    "boilerplate",
+    "nodejs",
+    "typescript",
+    "react",
+    "nextjs"
+  ],
+  "author": {
+    "name": "TheAbhiPatel",
+    "email": "theabhipatel.co@gmail.com",
+    "url": "https://github.com/theabhipatel"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theabhipatel/create-tap-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theabhipatel/create-tap-react/issues"
+  },
+  "homepage": "https://github.com/theabhipatel/create-tap-react#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "inquirer": "^9.2.12",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "degit": "^2.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
