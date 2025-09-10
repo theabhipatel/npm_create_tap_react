@@ -13,7 +13,7 @@ const TEMPLATES = [
     name: "React.js with TypeScript (Basic setup)",
     value: "template-react-ts",
     repo: "theabhipatel/template_react_ts",
-    description: "Modern React framework with TypeScript and Basic setup",
+    description: "React with TypeScript and all Basic setup",
     available: true,
   },
   {
