@@ -1,6 +1,6 @@
 {
   "name": "create-tap-react",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A modern CLI tool to create react applications with pre-configured templates",
   "main": "dist/index.js",
   "type": "module",
