@@ -7,8 +7,16 @@ import { execSync } from "child_process";
 import degit from "degit";
 import path from "path";
 import fs from "fs";
+import {
+  Template,
+  InquirerChoice,
+  TemplateSelection,
+  ProjectNameInput,
+  OverwriteConfirmation,
+  PackageJson,
+} from "./types.js";
 
-const TEMPLATES = [
+const TEMPLATES: Template[] = [
   {
     name: "React.js with TypeScript (Basic setup)",
     value: "template-react-ts",
@@ -34,85 +42,86 @@ const TEMPLATES = [
   },
 ];
 
-const CLI_NAME = "create-tap-react";
+const CLI_NAME: string = "create-tap-react";
 
-async function selectTemplate() {
-  const { template } = await inquirer.prompt([
+async function selectTemplate(): Promise<Template> {
+  const { template }: TemplateSelection = await inquirer.prompt([
     {
       name: "template",
       type: "list",
       message: "🎨 Select a template:",
-      choices: TEMPLATES.map((t) => ({
-        name: `${chalk.cyan(t.name)}${
-          !t.available ? chalk.red(" - Coming Soon") : ""
-        } - ${chalk.gray(t.description)}`,
-        value: t.value,
-        short: t.name,
-      })),
+      choices: TEMPLATES.map(
+        (t): InquirerChoice => ({
+          name: `${chalk.cyan(t.name)}${
+            !t.available ? chalk.red(" - Coming Soon") : ""
+          } - ${chalk.gray(t.description)}`,
+          value: t.value,
+          short: t.name,
+        })
+      ),
       pageSize: 10,
     },
   ]);
 
-  const selectedTemplate = TEMPLATES.find((t) => t.value === template);
+  const selectedTemplate: Template | undefined = TEMPLATES.find(
+    (t) => t.value === template
+  );
 
-  // Check if template is available
+  if (!selectedTemplate) {
+    throw new Error("Invalid template selection");
+  }
+
   if (!selectedTemplate.available) {
     console.log(
       chalk.red("\n⚠️  This template is coming soon and not available yet!")
     );
     console.log(chalk.yellow("Please choose another template.\n"));
 
-    // Recursively call selectTemplate to allow user to choose again
     return await selectTemplate();
   }
 
   return selectedTemplate;
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
-    // Welcome message
     console.log(chalk.cyan.bold(`\n🚀 Welcome to ${CLI_NAME}!\n`));
     console.log(
       chalk.gray("Create modern applications with pre-configured templates\n")
     );
 
-    // Template selection with coming soon handling
-    const selectedTemplate = await selectTemplate();
+    const selectedTemplate: Template = await selectTemplate();
 
-    // Project name input
-    const { projectName } = await inquirer.prompt([
+    const { projectName }: ProjectNameInput = await inquirer.prompt([
       {
         name: "projectName",
         type: "input",
         message: "📝 Project name:",
         default: "my-app",
-        validate: (input) => {
+        validate: (input: string): boolean | string => {
           if (!input || input.trim() === "") {
             return "Project name cannot be empty!";
           }
 
-          // Check for invalid characters
           if (!/^[a-zA-Z0-9-_\.]+$/.test(input)) {
             return "Project name can only contain letters, numbers, hyphens, underscores, and dots!";
           }
 
           return true;
         },
-        transformer: (input) => input.trim(),
+        transformer: (input: string): string => input.trim(),
       },
     ]);
 
-    const targetDir =
+    const targetDir: string =
       projectName === "." ? process.cwd() : path.resolve(projectName);
-    const projectDisplayName =
+    const projectDisplayName: string =
       projectName === "." ? "current directory" : projectName;
 
-    // Check if directory exists and is not empty
     if (fs.existsSync(targetDir) && projectName !== ".") {
-      const files = fs.readdirSync(targetDir);
+      const files: string[] = fs.readdirSync(targetDir);
       if (files.length > 0) {
-        const { overwrite } = await inquirer.prompt([
+        const { overwrite }: OverwriteConfirmation = await inquirer.prompt([
           {
             name: "overwrite",
             type: "confirm",
@@ -130,7 +139,6 @@ async function main() {
       }
     }
 
-    // Create project directory if it doesn't exist
     if (projectName !== "." && !fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
@@ -140,7 +148,6 @@ async function main() {
     );
     console.log(`🎨 Using template: ${chalk.green(selectedTemplate.name)}`);
 
-    // Clone template
     const cloneSpinner = ora("📥 Downloading template...").start();
 
     try {
@@ -154,16 +161,14 @@ async function main() {
       cloneSpinner.succeed("📥 Template downloaded successfully!");
     } catch (error) {
       cloneSpinner.fail("❌ Failed to download template");
-      console.error(chalk.red(`Error: ${error.message}`));
+      console.error(chalk.red(`Error: ${(error as Error).message}`));
       process.exit(1);
     }
 
-    // Install dependencies
     const installSpinner = ora("📦 Installing dependencies...").start();
 
     try {
-      // Check which package manager to use
-      let packageManager = "npm";
+      let packageManager: string = "npm";
 
       if (fs.existsSync(path.join(targetDir, "yarn.lock"))) {
         packageManager = "yarn";
@@ -171,7 +176,7 @@ async function main() {
         packageManager = "pnpm";
       }
 
-      const installCommand =
+      const installCommand: string =
         packageManager === "yarn"
           ? "yarn install"
           : packageManager === "pnpm"
@@ -197,19 +202,20 @@ async function main() {
       console.log(chalk.cyan("  npm install"));
     }
 
-    // Success message
     console.log(chalk.green.bold("\n🎉 Project created successfully!\n"));
 
-    // Next steps
     console.log(chalk.bold("📋 Next steps:"));
     if (projectName !== ".") {
       console.log(`   ${chalk.cyan(`cd ${projectName}`)}`);
     }
 
-    // Read package.json to get available scripts
     try {
-      const packageJsonPath = path.join(targetDir, "package.json");
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+      const packageJsonPath: string = path.join(targetDir, "package.json");
+      const packageJsonContent: string = fs.readFileSync(
+        packageJsonPath,
+        "utf-8"
+      );
+      const packageJson: PackageJson = JSON.parse(packageJsonContent);
 
       if (packageJson.scripts) {
         if (packageJson.scripts.dev) {
@@ -236,7 +242,6 @@ async function main() {
 
     console.log(chalk.gray("\n💡 Happy coding! 🚀\n"));
 
-    // Proper exit
     process.exit(0);
   } catch (error) {
     console.error(chalk.red("\n❌ An unexpected error occurred:"));
@@ -245,19 +250,17 @@ async function main() {
   }
 }
 
-// Handle process interruption
-process.on("SIGINT", () => {
+process.on("SIGINT", (): void => {
   console.log(chalk.yellow("\n\n👋 Goodbye!"));
   process.exit(0);
 });
 
-process.on("SIGTERM", () => {
+process.on("SIGTERM", (): void => {
   console.log(chalk.yellow("\n\n👋 Process terminated!"));
   process.exit(0);
 });
 
-// Run the CLI
-main().catch((error) => {
+main().catch((error: Error): void => {
   console.error(chalk.red("❌ Fatal error:"), error);
   process.exit(1);
 });
