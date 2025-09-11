@@ -2,18 +2,17 @@
   "name": "create-tap-react",
   "version": "1.0.1",
   "description": "A modern CLI tool to create react applications with pre-configured templates",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "create-tap-react": "./index.js",
-    "caa": "./index.js"
+    "create-tap-react": "./dist/index.js",
+    "caa": "./dist/index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "build": "echo 'No build step needed for Node.js CLI'",
-    "test": "echo 'Add tests here'",
-    "prepublishOnly": "echo 'Running pre-publish checks...'",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "postinstall": "echo 'Thanks for installing create-tap-react! 🚀'"
   },
   "keywords": [
@@ -45,20 +44,20 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
-    "degit": "^2.8.4",
     "inquirer": "^9.2.12",
-    "ora": "^7.0.1"
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "degit": "^2.8.4"
   },
   "devDependencies": {
-    "@types/degit": "^2.8.6",
-    "@types/inquirer": "^9.0.9",
     "@types/node": "^20.10.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "@types/inquirer": "^9.0.7",
+    "typescript": "^5.3.0",
+    "tsx": "^4.6.0",
+    "@types/degit": "^2.8.6"
   },
   "files": [
-    "index.js",
+    "dist/**/*",
     "README.md",
     "LICENSE"
   ],
