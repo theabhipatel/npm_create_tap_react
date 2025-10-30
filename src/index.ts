@@ -30,7 +30,7 @@ const TEMPLATES: Template[] = [
     repo: "theabhipatel/template_react_ts_auth",
     description:
       "Modern React framework with TypeScript and Authentication setup",
-    available: false,
+    available: true,
   },
   {
     name: "React.js Dashboard with Shadcn (Auth setup)",
